@@ -1,4 +1,7 @@
+using LootChestApi.Contexts;
 using LootChestApi.Models;
+using LootChestApi.Schema;
+using LootChestApi.Services;
 namespace LootChestApi;
 
 public class Program
@@ -10,12 +13,17 @@ public class Program
 
         builder.Services.AddControllers();
         builder.Services.AddEndpointsApiExplorer();
-        builder.Services.Configure<LootChestDatabaseSettings>(builder.Configuration.GetSection("BookStoreDatabase"));
         builder.Services
-            .AddGraphQLServer()
-            .AddQueryType<Schema.Query>()
-            .AddFiltering()
-            .AddSorting();
+               .Configure<LootChestDatabaseSettings>(builder.Configuration.GetSection(LootChestDatabaseSettings.SectionName));
+        builder.Services.AddSingleton<IMongoDBContext, MongoDBContext>();
+        builder.Services.AddSingleton<ItemService>();
+        builder.Services.AddSingleton<ChestService>();
+        
+        builder.Services
+               .AddGraphQLServer()
+               .AddQueryType<Query>()
+               .AddFiltering()
+               .AddSorting();
 
 
         var app = builder.Build();
