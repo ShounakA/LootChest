@@ -1,4 +1,4 @@
-namespace LootChestApi.Models;
+namespace LootChestApi.Schema;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 

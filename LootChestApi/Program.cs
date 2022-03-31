@@ -22,8 +22,9 @@ public class Program
         builder.Services
                .AddGraphQLServer()
                .AddQueryType<Query>()
-               .AddFiltering()
-               .AddSorting();
+               .AddMutationType<Mutation>()
+               .AddMongoDbFiltering()
+               .AddMongoDbSorting();
 
 
         var app = builder.Build();

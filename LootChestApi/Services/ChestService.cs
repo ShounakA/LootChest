@@ -1,5 +1,5 @@
 using LootChestApi.Contexts; 
-using LootChestApi.Models;
+using LootChestApi.Schema;
 using MongoDB.Driver;
 
 
@@ -21,8 +21,11 @@ public class ChestService
     public async Task<Chest?> GetAsync(string id) =>
         await ChestCollection.Find(x => x.Id == id).FirstOrDefaultAsync();
 
-    public async Task CreateAsync(Chest newChest) =>
+    public async Task<Chest> CreateAsync(Chest newChest)
+    { 
         await ChestCollection.InsertOneAsync(newChest);
+        return newChest;
+    }
 
     public async Task UpdateAsync(string id, Chest updatedChest) =>
         await ChestCollection.ReplaceOneAsync(x => x.Id == id, updatedChest);
