@@ -1,21 +1,35 @@
 using HotChocolate.Data;
-using LootChestApi.Services;
+using LootChestApi.Services.Query;
+using LootChestApi.Schema.Models;
 namespace LootChestApi.Schema;
-
-public class Query
+ class Query
 {
-
-    [UseSorting]
-    [UseFiltering]
-    public IExecutable<Item> GetItems([Service] ItemService service)
+    private IQueryService<ItemQueryable> _itemService;
+    private IQueryService<ChestQueryable> _chestService;
+    public Query(ItemQueryService itemService, ChestQueryService chestService)
     {
-        return service.ItemCollection.AsExecutable();
+        _itemService = itemService;
+        _chestService = chestService;
     }
 
     [UseSorting]
     [UseFiltering]
-    public IExecutable<Chest> GetChests([Service] ChestService service)
+    public IExecutable<ItemQueryable> GetItems()
     {
-        return service.ChestCollection.AsExecutable();
+        return _itemService.Collection.AsExecutable();
     }
+
+    [UseSorting]
+    [UseFiltering]
+    public IExecutable<ChestQueryable> GetChests()
+    {
+        return _chestService.Collection.AsExecutable();
+    }
+
+    public async Task<ChestQueryable?> GetChest([Argument("id")] string Id)
+    {
+        return await _chestService.GetAsync(Id);
+    }
+
+     
 }
