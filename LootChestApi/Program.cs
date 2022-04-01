@@ -1,9 +1,7 @@
 using LootChestApi.Contexts;
 using LootChestApi.Models;
 using LootChestApi.Schema;
-using LootChestApi.Schema.Models;
-using LootChestApi.Services.Mutation;
-using LootChestApi.Services.Query;
+using LootChestApi.Services;
 namespace LootChestApi;
 
 public class Program
@@ -17,13 +15,9 @@ public class Program
         builder.Services.AddEndpointsApiExplorer();
         builder.Services
                .Configure<LootChestDatabaseSettings>(builder.Configuration.GetSection(LootChestDatabaseSettings.SectionName));
-
         builder.Services.AddSingleton<IMongoDBContext, MongoDBContext>();
-
-        builder.Services.AddSingleton<IMutationService<ItemMutable>, ItemMutationService>();
-        builder.Services.AddSingleton<IMutationService<ChestMutable>, ChestMutationService>();
-        builder.Services.AddSingleton<IQueryService<ItemQueryable>, ItemQueryService>();
-        builder.Services.AddSingleton<IQueryService<ChestQueryable>, ChestQueryService>();
+        builder.Services.AddSingleton<ItemService>();
+        builder.Services.AddSingleton<ChestService>();
         
         builder.Services
                .AddGraphQLServer()
@@ -34,14 +28,10 @@ public class Program
 
 
         var app = builder.Build();
-
-        //app.UseExceptionHandler();
         app.MapControllers();
         app.UseHttpsRedirection();
         app.UseAuthorization();
         app.MapGraphQL();
-        
         app.Run();
-        
     }
 }
